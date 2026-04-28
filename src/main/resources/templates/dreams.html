@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="fragments/header :: head">
+    <title>Мои мечты - Logos</title>
+
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<main class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-star me-2"></i>Мои мечты</h2>
+        <button class="btn btn-primary" id="newDreamBtn" data-bs-toggle="modal" data-bs-target="#dreamModal">
+            <i class="fas fa-plus"></i> Новая мечта
+        </button>
+    </div>
+
+    <div id="dreamsList">
+        <!-- сюда динамически загружаются мечты -->
+        <div class="text-center py-5" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+    </div>
+</main>
+
+<!-- Модальное окно создания/редактирования мечты -->
+<div class="modal fade" id="dreamModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dreamModalTitle">Новая мечта</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="dreamForm">
+                    <input type="hidden" id="dreamId">
+                    <div class="mb-3">
+                        <label class="form-label">Название мечты *</label>
+                        <input type="text" class="form-control" id="dreamTitle" required maxlength="200">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        <textarea class="form-control" id="dreamDescription" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Фото-ожидание</label>
+                        <input type="file" class="form-control" id="dreamImageFile" accept="image/*">
+                        <div id="currentDreamImage" class="mt-2"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="saveDreamBtn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно добавления/редактирования цели -->
+<div class="modal fade" id="goalModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Цель</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="goalForm">
+                    <input type="hidden" id="goalId">
+                    <input type="hidden" id="goalDreamId">
+                    <div class="mb-3">
+                        <label class="form-label">Что нужно сделать?</label>
+                        <input type="text" class="form-control" id="goalTitle" required maxlength="200">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Срок (дедлайн)</label>
+                        <input type="date" class="form-control" id="goalDeadline" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="saveGoalBtn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно "Достичь мечты" -->
+<div class="modal fade" id="achieveModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Поздравляю! Вы достигли мечты</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="achieveForm">
+                    <input type="hidden" id="achieveDreamId">
+                    <div class="mb-3">
+                        <label class="form-label">Фото результата</label>
+                        <input type="file" class="form-control" id="resultImage" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Итоговый комментарий</label>
+                        <textarea class="form-control" id="achievementComment" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-success" id="confirmAchieveBtn">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/toast.js}"></script>
+<script th:src="@{/js/dreams.js}"></script>
+</body>
+</html>

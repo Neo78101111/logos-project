@@ -1,0 +1,337 @@
+/* Основные стили */
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Счетчик жизни */
+.life-counter {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.counter-label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.counter-value {
+    font-weight: normal;
+}
+
+/* Календарь */
+.calendar-grid {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Сетка дней */
+.calendar-days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+/* Карточка дня */
+.calendar-day-card {
+    min-height: 150px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.calendar-day-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Статусы дней */
+.calendar-day-card.day-today {
+    border: 2px solid #0d6efd !important;
+    background-color: #e7f1ff !important;
+}
+
+.calendar-day-card.day-past {
+    opacity: 0.8;
+    background-color: #f8f9fa;
+}
+
+.calendar-day-card.day-future {
+    opacity: 0.6;
+}
+
+/* Пустые ячейки для выравнивания */
+.calendar-day-card.empty {
+    visibility: hidden;
+    border: none !important;
+    background: transparent !important;
+}
+
+.calendar-weekdays {
+    font-weight: bold;
+    color: #495057;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Кнопки в днях */
+.day-actions {
+    text-align: center;
+}
+
+.day-actions .btn {
+    font-size: 0.8rem;
+    padding: 0.15rem 0.5rem;
+}
+
+/* Статистика */
+.stat-item {
+    text-align: center;
+    padding: 10px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .calendar-day-card {
+        min-height: 120px;
+    }
+
+    .life-counter {
+        display: none;
+    }
+
+    .calendar-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .month-navigation {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .day-actions .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 3px;
+    }
+
+    .day-actions .btn.ms-1 {
+        margin-left: 0 !important;
+    }
+}
+
+/* Модальные окна */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+}
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 10px 10px 0 0;
+}
+
+/* Навигация */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-link.active {
+    font-weight: bold;
+}
+
+/* Формы */
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+/* Кнопки */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+/* Уведомления */
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+/* ===== Стили для целей в модальном окне просмотра ===== */
+#viewGoalsList ul {
+    padding-left: 0;
+}
+
+#viewGoalsList li {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.75rem;
+}
+
+#viewGoalsList li:last-child {
+    border-bottom: none;
+}
+
+#viewGoalsList .btn-sm {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Иконки приоритетов */
+.fa-exclamation-circle {
+    color: #dc3545;
+}
+
+.fa-minus-circle {
+    color: #ffc107;
+}
+
+.fa-arrow-circle-down {
+    color: #17a2b8;
+}
+
+/* ===== Стили для целей в карточке дня ===== */
+.goal-item {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    padding: 2px 0;
+}
+
+.goal-item i {
+    font-size: 0.9rem;
+}
+
+/* Счётчики "ещё X важных" и "всего Y целей" */
+.text-muted.small i {
+    margin-right: 0.2rem;
+}
+
+
+/* ===== СТРАНИЦА МЕЧТЫ ===== */
+
+.dream-card {
+    margin-bottom: 2rem;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+}
+
+.dream-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.dream-image {
+    max-height: 300px;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 1rem 1rem 0 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.goal-item {
+    background: #f8f9fa;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.goal-info {
+    flex: 2;
+    min-width: 150px;
+}
+
+.goal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.goal-title.completed {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.goal-deadline {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.goal-timer {
+    background: #2c3e50;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: bold;
+    font-size: 1.25rem;
+    min-width: 100px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.goal-timer.urgent {
+    background: #dc3545;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.goal-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.result-image {
+    max-height: 200px;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .goal-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .goal-actions {
+        justify-content: flex-end;
+    }
+}

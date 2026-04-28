@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="fragments/header :: head">
+    <title>Профиль - Logos</title>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<main class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-user-circle me-2"></i>Личная информация</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Статистика жизни -->
+                    <div class="alert alert-info" th:if="${lifeCountdown}">
+                        <i class="fas fa-hourglass-half me-2"></i>
+                        <strong>Оставшееся время:</strong>
+                        <span th:text="${lifeCountdown.years}">0</span> лет,
+                        <span th:text="${lifeCountdown.months}">0</span> мес,
+                        <span th:text="${lifeCountdown.days}">0</span> дней
+                        (<span th:text="${lifeCountdown.totalDays}">0</span> дней всего)
+                    </div>
+
+                    <!-- Форма редактирования -->
+                    <form id="profileForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Имя пользователя</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="birthDate" class="form-label">Дата рождения</label>
+                                <input type="date" class="form-control" id="birthDate" name="birthDate" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="deathDate" class="form-label">Дата смерти (прогноз)</label>
+                                <input type="date" class="form-control" id="deathDate" name="deathDate" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+                            <i class="fas fa-save me-1"></i> Сохранить изменения
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Форма смены пароля -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-key me-2"></i>Смена пароля</h5>
+                </div>
+                <div class="card-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label for="oldPassword" class="form-label">Текущий пароль</label>
+                            <input type="password" class="form-control" id="oldPassword" name="oldPassword" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Новый пароль</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Подтвердите новый пароль</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <button type="submit" class="btn btn-warning" id="changePasswordBtn">
+                            <i class="fas fa-exchange-alt me-1"></i> Сменить пароль
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- Контейнер для тостов -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/toast.js}"></script>
+<script th:src="@{/js/validation.js}"></script>
+<script th:src="@{/js/profile.js}"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+
+volumes:
+  postgres_logos_data:
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: logos_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-logos}
+      POSTGRES_USER: ${DB_USER:-user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - postgres_logos_data:/var/lib/postgresql/data
+    networks:
+      - logos-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-user} -d ${DB_NAME:-logos}"]
+      interval: 10s  # Проверять каждые 10 секунд
+      timeout: 5s    # Таймаут 5 секунд
+      retries: 5     # 5 попыток перед маркировкой unhealthy
+      start_period: 30s  # 30 секунд на старт
+
+
+  app:
+    restart: always
+    build: .
+    container_name: logos_app
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-logos}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-password}
+
+    networks:
+      - logos-network
+
+
+networks:
+  logos-network:
+    driver: bridge
+

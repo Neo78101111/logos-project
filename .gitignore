@@ -1,0 +1,141 @@
+# ===== MAVEN =====
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.properties
+
+# ===== GRADLE =====
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/build/libs/
+
+# ===== INTELLIJ IDEA =====
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# ===== ECLIPSE =====
+.classpath
+.project
+.settings/
+.factorypath
+bin/
+*.tmp
+
+# ===== NETBEANS =====
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ===== VS CODE =====
+.vscode/
+*.code-workspace
+
+# ===== DOCKER =====
+docker-compose.override.yml
+docker-compose.prod.yml
+docker-compose.local.yml
+
+# ===== ENVIRONMENT VARIABLES =====
+.env
+.env.local
+.env.development
+.env.production
+!.env.example  # Исключение: пример файла коммитим
+
+# ===== APPLICATION CONFIGURATION =====
+src/main/resources/application.properties
+src/main/resources/application-*.properties
+!src/main/resources/application.properties.example  # Пример коммитим
+!src/main/resources/application-docker.properties  # Docker конфиг коммитим
+
+# ===== LOGS =====
+*.log
+logs/
+!**/src/main/**/logs/
+!**/src/test/**/logs/
+
+# ===== OPERATING SYSTEM =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ===== EDITORS =====
+*.swp
+*.swo
+*~
+
+# ===== COMPILED OUTPUT =====
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ===== DEPENDENCIES =====
+**/node_modules/
+
+# ===== TESTING =====
+**/surefire-reports/
+**/failsafe-reports/
+**/test-results/
+**/jacoco-reports/
+jacoco.exec
+jacoco-it.exec
+
+# ===== SECURITY =====
+*.p12
+*.jks
+*.keystore
+*.truststore
+secrets/
+credentials/
+
+# ===== DATABASE =====
+*.db
+*.sqlite
+*.h2.db
+/db/
+/data/
+!/data/README.md
+
+# ===== UPLOADS / TEMP FILES =====
+uploads/
+temp/
+tmp/
+!/temp/README.md
+
+# ===== MAVEN WRAPPER =====
+!mvnw
+!mvnw.cmd
+!.mvn/wrapper/maven-wrapper.jar  # Важно: исключаем jar, но оставляем файл
+
+# ===== SPRING BOOT DEVTOOLS =====
+.springboot/
+.reload/
+
+# ===== CUSTOM =====
+# Добавьте здесь специфичные для вашего проекта файлы
+
+# ===== HELP.MD =====
+# HELP.md автоматически генерируется Spring Initializr, можно коммитить
+# !HELP.md

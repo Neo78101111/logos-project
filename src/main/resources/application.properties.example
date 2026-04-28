@@ -1,0 +1,26 @@
+# Database
+spring.datasource.url=jdbc:postgresql://localhost:${DB_PORT:-5433}/${DB_NAME:-logos}
+spring.datasource.username=${DB_USER:-user}
+spring.datasource.password=${DB_PASSWORD:-password}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Server
+server.port=8080
+
+# Thymeleaf
+spring.thymeleaf.cache=false
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+
+# Logging
+logging.level.root=INFO
+logging.level.com.logos=DEBUG
+logging.file.name=./logs/logos.log
+
+upload.path=./uploads

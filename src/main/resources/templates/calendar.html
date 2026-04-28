@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="fragments/header :: head">
+    <title>Календарь - Logos</title>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<main class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Заголовок и навигация -->
+            <div class="calendar-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <h2 th:text="${monthData?.monthName ?: 'Календарь'}"></h2>
+                <div class="month-navigation d-flex flex-wrap gap-2">
+                    <!-- Предыдущий месяц -->
+                    <a th:if="${monthData?.previousMonth != null}" id="prevMonthLink"
+                       th:href="@{/calendar?date={date}(date=${monthData.previousMonth})}"
+                       class="btn btn-outline-primary">
+                        <i class="fas fa-chevron-left"></i> Предыдущий
+                    </a>
+
+                    <!-- Сегодня -->
+                    <a th:href="@{/calendar}" id="todayLink" class="btn btn-outline-secondary">
+                        Сегодня
+                    </a>
+
+                    <!-- Следующий месяц -->
+                    <a th:if="${monthData?.nextMonth != null}" id="nextMonthLink"
+                       th:href="@{/calendar?date={date}(date=${monthData.nextMonth})}"
+                       class="btn btn-outline-primary">
+                        Следующий <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Статистика месяца -->
+            <div class="card mb-4" th:if="${monthData != null}">
+                <div class="card-body">
+                    <h5 class="card-title">Статистика месяца</h5>
+                    <div class="row">
+                        <div class="col-md-3 col-6">
+                            <div class="stat-item">
+                                <span class="stat-label">Оценено дней:</span>
+                                <span class="stat-value" id="evaluatedDaysCount" th:text="${monthData.evaluatedDays} ?: 0"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-item">
+                                <span class="stat-label">Средняя оценка:</span>
+                                <span class="stat-value" id="averageSatisfaction" th:text="${#numbers.formatDecimal(monthData.averageSatisfaction, 1, 2)} ?: '0.0'"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-item">
+                                <span class="stat-label">Завершено задач:</span>
+                                <span class="stat-value" id="completedTasksCount" th:text="${monthData.completedTasks} + '/' + ${monthData.totalTasks}"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-item">
+                                <span class="stat-label">Всего дней:</span>
+                                <span class="stat-value" id="totalDaysCount" th:text="${monthData.totalDays} ?: 0"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Календарная сетка -->
+            <div class="calendar-grid">
+                <!-- Дни недели -->
+                <div class="calendar-weekdays row mb-2">
+                    <div class="col p-2 text-center fw-bold">Пн</div>
+                    <div class="col p-2 text-center fw-bold">Вт</div>
+                    <div class="col p-2 text-center fw-bold">Ср</div>
+                    <div class="col p-2 text-center fw-bold">Чт</div>
+                    <div class="col p-2 text-center fw-bold">Пт</div>
+                    <div class="col p-2 text-center fw-bold">Сб</div>
+                    <div class="col p-2 text-center fw-bold">Вс</div>
+                </div>
+
+                <!-- Дни месяца -->
+                <div class="calendar-days-grid" id="calendarDays">
+                    <!-- Пустые ячейки для выравнивания первого дня -->
+                    <th:block th:if="${monthData?.days != null and not #lists.isEmpty(monthData.days)}">
+                        <th:block th:with="firstDayDate=${monthData.days[0].date}">
+                            <th:block th:with="dayOfWeekNumber=${firstDayDate.getDayOfWeek().getValue()}">
+                                <!-- Создаем пустые ячейки для дней до первого дня месяца -->
+                                <th:block th:each="i : ${#numbers.sequence(1, dayOfWeekNumber - 1)}">
+                                    <div class="calendar-day-card empty border-0"></div>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+
+                        <!-- Дни месяца -->
+                        <th:block th:each="day : ${monthData.days}">
+                            <div class="calendar-day-card p-2"
+                                 th:classappend="'day-' + ${day.temporalStatus.toString().toLowerCase()}">
+
+                                <!-- Заголовок дня -->
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold" th:text="${#temporals.day(day.date)}"></span>
+                                    <small class="text-muted" th:text="${#temporals.format(day.date, 'E')}"></small>
+                                </div>
+
+                                <!-- Задачи дня -->
+                                <div class="day-tasks mb-2" style="min-height: 60px;">
+                                    <th:block th:if="${#lists.isEmpty(day.tasks)}">
+                                        <div class="text-muted small">
+                                            <i class="fas fa-bullseye"></i> Нет задач
+                                        </div>
+                                    </th:block>
+                                    <th:block th:unless="${#lists.isEmpty(day.tasks)}">
+                                        <th:block th:with="highTasks=${day.tasks.?[priority.name()=='HIGH']},
+                                                              highCount=${#lists.size(highTasks)},
+                                                              totalCount=${#lists.size(day.tasks)}">
+                                            <!-- Показываем первые 3 высокоприоритетные задачи -->
+                                            <th:block th:each="task, iterStat : ${highTasks}" th:if="${iterStat.index < 3}">
+                                                <div class="task-item d-flex align-items-start mb-1">
+                                                    <i th:class="${task.completed} ? 'fas fa-check-circle text-success me-1 mt-1' : 'far fa-circle text-secondary me-1 mt-1'"></i>
+                                                    <span class="flex-grow-1 small" th:text="${task.title}"></span>
+                                                </div>
+                                            </th:block>
+
+                                            <!-- Если высокоприоритетных больше 3 -->
+                                            <th:block th:if="${highCount > 3}">
+                                                <div class="small text-muted">
+                                                    <i class="fas fa-ellipsis-h"></i> ещё <span th:text="${highCount - 3}"></span> важных
+                                                </div>
+                                            </th:block>
+
+                                            <!-- Если есть задачи других приоритетов -->
+                                            <th:block th:if="${totalCount > highCount}">
+                                                <div class="small text-muted">
+                                                    <i class="fas fa-bullseye"></i> всего <span th:text="${totalCount}"></span> задач
+                                                </div>
+                                            </th:block>
+                                        </th:block>
+                                    </th:block>
+                                </div>
+
+                                <!-- Кнопки действий -->
+                                <div class="day-actions mt-2">
+                                    <!-- Кнопка "Задача" - только для сегодняшних и будущих дней -->
+                                    <button th:if="${day.temporalStatus.name() != 'PAST'}"
+                                            class="btn btn-sm btn-outline-primary add-task-btn"
+                                            th:attr="data-date=${#temporals.format(day.date, 'yyyy-MM-dd')}">
+                                        <i class="fas fa-bullseye"></i> Задача
+                                    </button>
+
+                                    <!-- Кнопка "Оценить" - только для сегодняшнего дня без оценки -->
+                                    <button th:if="${day.date == monthData.today and day.evaluation == null}"
+                                            class="btn btn-sm btn-outline-success evaluate-btn ms-1"
+                                            th:attr="data-date=${#temporals.format(day.date, 'yyyy-MM-dd')}">
+                                        <i class="fas fa-star"></i> Оценить
+                                    </button>
+
+                                    <!-- Кнопка "Просмотр" – для любого из дней -->
+                                    <button class="btn btn-sm btn-outline-info view-day-btn ms-1"
+                                            th:attr="data-date=${#temporals.format(day.date, 'yyyy-MM-dd')}">
+                                        <i class="fas fa-eye"></i> Просмотр
+                                    </button>
+                                </div>
+                            </div>
+                        </th:block>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Модальное окно для добавления задачи -->
+<div class="modal fade" id="addTaskModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить задачу на день</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="taskDate" name="date">
+                    <div class="mb-3">
+                        <label for="taskTitle" class="form-label">Название задачи *</label>
+                        <input type="text" class="form-control" id="taskTitle" name="title"
+                               required maxlength="200" placeholder="Например: Прочитать 50 страниц книги">
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDescription" class="form-label">Описание (необязательно)</label>
+                        <textarea class="form-control" id="taskDescription" name="description"
+                                  rows="3" placeholder="Дополнительные детали..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskPriority" class="form-label">Приоритет</label>
+                        <select class="form-control" id="taskPriority" name="priority">
+                            <option value="HIGH">🔴 Высокий</option>
+                            <option value="MEDIUM" selected>🟡 Средний</option>
+                            <option value="LOW">🔵 Низкий</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="saveTask">Сохранить задачу</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для оценки дня -->
+<div class="modal fade" id="evaluateDayModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Оценка дня по стоическим добродетелям</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="evaluationForm">
+                    <input type="hidden" id="evaluationDate" name="date">
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Мудрость (1-10) *</label>
+                            <input type="number" class="form-control evaluation-score"
+                                   name="wisdomScore" min="1" max="10" required>
+                            <small class="text-muted">Правильные решения, понимание ситуации</small>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Мужество (1-10) *</label>
+                            <input type="number" class="form-control evaluation-score"
+                                   name="courageScore" min="1" max="10" required>
+                            <small class="text-muted">Преодоление страхов, смелые поступки</small>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Умеренность (1-10) *</label>
+                            <input type="number" class="form-control evaluation-score"
+                                   name="temperanceScore" min="1" max="10" required>
+                            <small class="text-muted">Самоконтроль, баланс во всем</small>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Справедливость (1-10) *</label>
+                            <input type="number" class="form-control evaluation-score"
+                                   name="justiceScore" min="1" max="10" required>
+                            <small class="text-muted">Честность, справедливые действия</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Общая удовлетворенность (1-10) *</label>
+                        <input type="number" class="form-control" id="satisfactionScore"
+                               name="daySatisfactionScore" min="1" max="10" required>
+                        <small class="text-muted">Общее ощущение от прошедшего дня</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Комментарий (необязательно)</label>
+                        <textarea class="form-control" name="comment" rows="4"
+                                  placeholder="Что было хорошо? Что можно улучшить? Какие уроки вынесли?"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="saveEvaluation">Сохранить оценку</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно просмотра дня -->
+<div class="modal fade" id="viewDayModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-calendar-day me-2"></i>
+                    День: <span id="viewDate"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Задачи дня -->
+                <h6 class="border-bottom pb-2 mb-3">
+                    <i class="fas fa-bullseye me-2"></i>Задачи
+                </h6>
+                <div id="viewTasksList" class="mb-4">
+                    <!-- Динамически заполняется JS -->
+                </div>
+
+                <!-- Оценка дня -->
+                <h6 class="border-bottom pb-2 mb-3">
+                    <i class="fas fa-star me-2"></i>Оценка дня
+                </h6>
+                <div id="viewEvaluation">
+                    <!-- Динамически заполняется JS -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Футер -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- Контейнер для тостов -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+<!-- Скрытые поля для текущего года и месяца -->
+<input type="hidden" id="currentYear" th:value="${monthData?.year}">
+<input type="hidden" id="currentMonth" th:value="${monthData?.month}">
+
+<!-- Подключаем Bootstrap и jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Подключаем скрипты (toast.js и calendar.js) -->
+<script th:src="@{/js/toast.js}"></script>
+<script th:src="@{/js/calendar.js}"></script>
+
+</body>
+</html>
